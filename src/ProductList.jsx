@@ -8,8 +8,12 @@ function ProductList({ onHomeClick }) {
     const [showCart, setShowCart] = useState(false);
     const [showPlants, setShowPlants] = useState(false); // State to control the visibility of the About Us page
     const [addedToCart, setAddedToCart] = useState({});
+    const cart = useSelector(state => state.cart.items);
     const dispatch = useDispatch();
 
+    const totalQuantity = () => {
+        return cart.reduce((sum, item) => sum + item.quantity, 0);
+    }
     const plantsArray = [
         {
             category: "Air Purifying Plants",
@@ -258,7 +262,7 @@ function ProductList({ onHomeClick }) {
         setShowCart(false);
     };
 
-    const handleAddedToCart = (plant) => {
+    const handleAddToCart = (plant) => {
         dispatch(addItem(plant));
         setAddedToCart((prevState) => ({
             ...prevState, [plant.name]: true
@@ -296,7 +300,11 @@ function ProductList({ onHomeClick }) {
                                         <h5 className="product-title">{plant.name}</h5>
                                         <div className="product-description">{plant.description}</div>
                                         <div className="product-cost">{plant.cost}</div>
-                                        <button className="product-button" onClick={() => handleAddToCart(plant)}>Add to Cart</button>
+                                        {!addedToCart[plant.name] ? (
+                                            <button className="product-button" onClick={() => handleAddToCart(plant)}>Add to Cart</button>
+                                        ) : (
+                                            <div>Added to Cart</div>
+                                        )}
                                     </div>
                                 ))}
                             </div>
